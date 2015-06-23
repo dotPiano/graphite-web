@@ -77,6 +77,22 @@ def safeMul(*factors):
   product = reduce(lambda x,y: x*y, factors)
   return product
 
+def safeSin(theta):
+  if theta is None: return None
+  try:
+    result = math.sin(theta)
+  except ValueError:
+    return None
+  return result
+
+def safeCos(theta):
+  if theta is None: return None
+  try:
+    result = math.cos(theta)
+  except ValueError:
+    return None
+  return result
+
 def safeSubtract(a,b):
     if a is None or b is None: return None
     return float(a) - float(b)
@@ -837,6 +853,42 @@ def absolute(requestContext, seriesList):
     series.pathExpression = series.name
     for i,value in enumerate(series):
       series[i] = safeAbs(value)
+  return seriesList
+  
+def sinSeries(requestContext, seriesList):
+  """
+  Takes one metric or a wildcard seriesList, and computes the sinus of each datapoint.
+  Expects the datapoints to be expressed in radians.
+  
+  Example:
+
+  .. code-block:: none
+
+    &target=sinSeries(Server.node.measurements.angle)
+
+  """
+  for series in seriesList:
+    series.name = "sinSeries(%s)" % (series.name)
+    for i,value in enumerate(series):
+      series[i] = safeSin(value)
+  return seriesList
+
+def cosSeries(requestContext, seriesList):
+  """
+  Takes one metric or a wildcard seriesList, and computes the cosinus of each datapoint.
+  Expects the datapoints to be expressed in radians.
+
+  Example:
+
+  .. code-block:: none
+
+    &target=cosSeries(Server.node.measurements.angle)
+
+  """
+  for series in seriesList:
+    series.name = "cosSeries(%s)" % (series.name)
+    for i,value in enumerate(series):
+      series[i] = safeCos(value)
   return seriesList
 
 def offset(requestContext, seriesList, factor):
@@ -3350,6 +3402,8 @@ SeriesFunctions = {
   'smartSummarize' : smartSummarize,
   'hitcount'  : hitcount,
   'absolute' : absolute,
+  'sinSeries' : sinSeries,
+  'cosSeries' : cosSeries,
 
   # Calculate functions
   'movingAverage' : movingAverage,

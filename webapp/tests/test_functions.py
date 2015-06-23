@@ -347,6 +347,30 @@ class FunctionsTest(TestCase):
                 expected_value = math.pow(original_value, 0.5)
                 self.assertEqual(value, expected_value)
 
+    def test_sinSeries(self):
+        seriesList = self._generate_series_list()
+        # Leave the original seriesList undisturbed for verification
+        results = functions.sinSeries({}, copy.deepcopy(seriesList))
+        for i, series in enumerate(results):
+            for counter, value in enumerate(series):
+                if value is None:
+                    continue
+                original_value = seriesList[i][counter]
+                expected_value = math.sin(original_value)
+                self.assertEqual(value, expected_value)
+                
+    def test_cosSeries(self):
+        seriesList = self._generate_series_list()
+        # Leave the original seriesList undisturbed for verification
+        results = functions.cosSeries({}, copy.deepcopy(seriesList))
+        for i, series in enumerate(results):
+            for counter, value in enumerate(series):
+                if value is None:
+                    continue
+                original_value = seriesList[i][counter]
+                expected_value = math.cos(original_value)
+                self.assertEqual(value, expected_value)
+
     def test_invert(self):
         seriesList = self._generate_series_list()
         # Leave the original seriesList undisturbed for verification
